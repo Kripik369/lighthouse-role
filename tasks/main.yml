@@ -1,0 +1,39 @@
+---
+# tasks file for lighthouse-role
+    - name: Create a directory
+      become: true
+      ansible.builtin.file:
+       path: /home/svil/git
+       state: directory
+       mode: '0755'
+    - name: Clone a repo
+      become: true
+      ansible.builtin.git:
+        repo: 'https://github.com/VKCOM/lighthouse.git'
+        dest: /home/svil/git
+    - name: config
+      become: true
+      ansible.builtin.template:
+        src: default
+        dest: /etc/nginx/sites-available/default
+        mode: '0644'
+    - name: chmod 755 /home/svil
+      file:
+       path: /home/svil
+       mode: '0755'
+
+    - name: chmod 755 /home/svil/git
+      file:
+       path: /home/svil/git
+       mode: '0755'
+
+    - name: chmod 644 /home/svil/git/index.html
+      file:
+       path: /home/svil/git/index.html
+       mode: '0644'
+
+    - name: restart nginx
+      become: true
+      systemd:
+        name: nginx
+        state: restarted
